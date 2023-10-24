@@ -1,0 +1,195 @@
+---
+title: "Homework 11"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Assignment for Biostatistics Week 11:
+
+Download and open the “apoptosis” data from the class webpage Answer the following questions referring to this dataset.
+
+This data summarizes an in vitro study of patients with HIV taking IL-7. The main measurement of interest was the percent of cells undergoing apoptosis (cell death), over time. That measurement has been summarized in two ways: betahat6, a measure of the trend of the change over time for each person, and avdiff6, a measure of the average change over time.
+
+```{r}
+library(readr)
+apoptosis <- read_csv("Papers/Biostatistics JHU 2021/apoptosis.csv")
+```
+
+1.	Make a scatterplot of betahat6 against CD4 using plot( )
+
+```{r}
+
+plot(apoptosis$betahat6 ~ apoptosis$CD4)
+
+```
+
+a.	Compute the value of the Pearson Correlation Coefficient and test whether this is =0 using cor.test( ). What is your p-value? What can you say? 
+
+```{r}
+
+cor.test(apoptosis$CD4, apoptosis$betahat6)
+
+
+```
+*p-value is not statistically significant. Can't reject 0.* 
+
+b.	Now find the Spearman Correlation Coefficient based on the ranks, using the same function but specifying method= “spearman”.   What is the value of Spearman’s ρ? What is your p-value? Using this, are these variables significantly correlated? 
+
+```{r}
+#Enter code here
+
+cor.test(apoptosis$CD4, apoptosis$betahat6, method = "spearman")
+
+
+```
+*p-value is statistically significant, more appropriate because of the outlier.*
+
+c.	Use lm( ) to fit a regression line to betahat6 predicted by CD4. Write down the regression equation for this fit line:
+
+```{r}
+#Enter code here
+summary(lm(formula = apoptosis$betahat6 ~ apoptosis$CD4))
+
+
+```
+
+d.	Is the slope of the line significantly different than 0? What is your p-value?
+
+*No, because p-value is greater than .05. Same p-value as pearson, will always be true if have single x and y values.*
+
+e.	Plot the residuals versus fitted values. Describe what you see. Does the line seem to fit well, based on this? 
+
+```{r}
+fit1 <- lm(apoptosis$betahat6 ~ apoptosis$CD4)
+
+names(fit1)
+plot(fit1$fitted.values, fit1$residuals)
+abline(h=0)
+plot(apoptosis$betahat6 ~ apoptosis$CD4)
+abline(fit1)
+
+
+```
+
+f.	Find the R2  using the output of the linear regression.  If you square root this, what number do you get? 
+
+*Multiple R-squared:  0.08073; sqrt(.08073) = 0.2841303*
+
+
+2.	Notice that there is one large outlier, with the highest CD4 count in the data. Exclude that one value, and recompute:
+a.	The Pearson Correlation coefficient and p-value.
+
+```{r}
+#Enter code here
+#use subset() or square brackets - data point. Look at past homework.
+no_outlier <- subset(apoptosis, CD4<=800, select = CD4)
+no_outlier2 <- subset(apoptosis, betahat6<=4.5, select = betahat6)
+cor.test(no_outlier$CD4, no_outlier2$betahat6)
+
+```
+
+b.	The Spearman Correlation coefficient and p-value.
+
+```{r}
+
+cor.test(no_outlier$CD4, no_outlier2$betahat6, method = "spearman")
+
+```
+
+c.	the regression equation and p-value. 
+
+```{r}
+#Enter code here
+
+summary(lm(formula = no_outlier$CD4 ~ no_outlier2$betahat6))
+
+```
+
+d.	The plot of residuals versus fitted values
+
+```{r}
+fit2 <- lm(no_outlier$CD4 ~ no_outlier2$betahat6)
+names(fit2)
+plot(fit2$fitted.values, fit2$residuals)
+abline(h=0)
+
+plot(no_outlier$CD4 ~ no_outlier2$betahat6)
+abline(fit2)
+
+```
+
+
+Which of these changed substantially? Why?
+
+*What changed significantly is the pearsons and the spearman tests because you excluded that outlier and there wa less sway in one direction.*
+
+ 
+Other Homework: Chapter 17 #1, 3,7, Chapter 18 #4, #9, 
+
+17.1 When you are investigating the relationship between two continuous random variables, why is it important to create a scatter plot of the data?
+*This allows you to see the individual points better and to determine if there are any outliers.*
+
+17.3  How does Spearman's rank correlation differ from the Pearson correlation?
+*The Pearson is most appropriate for measurements taken from an interval scale, while the Spearman is more appropriate for measurements taken from ordinal scales.*
+
+17.7. The data set lowbwt contains information collected for a sample of 100 low birth weight infants born in two teaching hospitals in Boston, Massachusetts [5] (Appendix B, Table B.7). Measurements of systolic blood pressure are saved under the variable name sbp, and values of the Apgar score recorded five minutes after birth-an index of neonatal asphyxia or oxygen deprivation-are saved under the name apgar5. The Apgar score is an ordinal random variable that takes values between 0 and 10.
+
+(a) Estimate the correlation of the random variables systolic blood pressure and five-minute Apgar score for this population of low birth weight infants.
+```{r}
+library(readr)
+lowbwt <- read_csv("Papers/Biostatistics JHU 2021/lowbwt.csv")
+plot(lowbwt$sbp ~ lowbwt$apgar5)
+t.test(lowbwt$sbp, lowbwt$apgar5)
+
+```
+
+(b) Does Apgar score tend to increase or decrease as systolic blood pressure increases?
+*As Apgar increase it looks like so does the systolic blood pressure.*
+
+(c) Test the null hypothesis  H0 : ρ = 0.  What do you conclude?
+*We can reject the null hypothesis, because the p-value is less than .05.*
+
+18.4 Why is it dangerous to extrapolate an estimated linear regression line outside the range of the observed data values?
+*This can introduce too many variables making the data unreliable.*
+
+18.9. The data set lowbwt contains information for the sample of 100 low birth weight infants born in Boston, Massachusetts. Measurements of systolic blood pressure are saved under the variable name sbp, and values of gestational age under the name *gestage*. 
+
+(a) Construct a two-way scatter plot of systolic blood pressure versus gestational age. Does the graph suggest anything about the nature of the relationship between these variables?
+```{r}
+plot(lowbwt$sbp ~ lowbwt$gestage)
+
+summary(lm(formula = lowbwt$sbp ~ lowbwt$gestage))
+fit3 <- lm(lowbwt$sbp ~ lowbwt$gestage)
+names(fit3)
+plot(fit3$fitted.values, fit3$residuals)
+abline(h=0)
+plot(lowbwt$sbp ~ lowbwt$gestage)
+abline(fit3)
+t.test(lowbwt$sbp, lowbwt$gestage)
+
+```
+*This graph suggests there may be a correlation between the ages of 29 and 31 have chances of higher spb.*
+
+(b) Using systolic blood pressure as the response and gestational age as the explanatory variable, compute the  least-squares regression line. Interpret the estimated slope and y-intercept of the line; what do they mean in words?
+*As women age they seem to stay around the 40 spb, but there are df surrounding the line.*
+
+(c) At the 0.05 level of significance, test the null hypothesis that the true population slope β is equal to 0. What do you conclude?
+*We can reject the null hypothesis because the p-value is below .05.*
+
+(d) What is the estimated mean systolic blood pressure for the population of low birth weight infants whose gestational age is 31 weeks?
+*The mean is 28.89*
+
+(e) Construct a 95% confidence interval for the true mean value of systolic blood pressure when x = 31 weeks.
+*The confidence interval is between 15.87472 and 20.50528.*
+
+(f) Suppose that you randomly select a new child from the population of low birth weight infants with gestational age 31 weeks. What is the predicted systolic blood pressure for this child?
+*The predicted sbp for this infant will be close to 40.*
+
+(g) Construct a 95% prediction interval for this new value of systolic blood pressure.
+
+(h) Does the least-squares regression model seem to fit the observed data? Comment on the coefficient of determination and a plot of the residuals versus the fitted values of systolic blood pressure.
+*The least squares regression model seems to fit the observed data based on the residual values we calculated and then aligning them with the spb numbers from the graph.*
+
