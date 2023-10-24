@@ -1,0 +1,146 @@
+---
+title: "Homework 2"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Homework 2
+
+## Computer Assignment for Biostatistics Week 2: 
+
+Download and read in the est1.csv data. 
+
+This data is a subset of the Coronary Artery Surgery Study (CASS) . looking at the use of an Exercise Stress Test (y1; 1=positive) and history of Chest Pain (y2; 1=yes) as predictors of coronary artery disease (d; 1=yes), as diagnosed by the gold standard of arteriography.  The men in this sample were all undergoing coronary arteriography for suspected disease. The data is taken from “The Statistical Evaluation if Medical Tests for Classification and Prediction” by Margaret Pepe. 
+
+Assume this data is a random sample from the population of men who would undergo arteriography for suspected coronary artery disease. 
+
+```{r}
+# read in the data here
+
+library(readr)
+est1 <- read_csv("~/Papers/Biostatistics JHU 2021/est1.csv")
+
+```
+
+From this data, compute :
+
+a)	Proportion of men in this sample who have disease
+
+```{r}
+n <- length(est1$d)
+table(est1$d)/n
+
+```
+*0.698 men have the disease*
+
+b)	Proportion of men in this sample who score “Positive” on the Exercise Stress Test (y1=1)
+
+```{r}
+
+table(est1$y1)/n
+
+```
+*0.635 men scored positive on the Exercise Stress Test*
+
+c)	Proportion of men in this sample who score “Positive” on the Exercise Stress Test and have disease (y1=1 & d=1)
+
+```{r}
+
+table(est1$d, est1$y1)/n
+
+
+
+```
+*0.556 men score “Positive” on the Exercise Stress Test and have disease*
+
+From a-c, do you think Disease status and result from EST are independent?  Why or Why not? 
+
+*Yes, I think the results are Independent. This is because the results of testing positive for the disease and the Stress Test are not dependent on the other, and is not a predictable factor for disease. One event does not lead to the other.*
+
+
+Also compute:
+d)	Sensitivity, Specificity, and Predictive Value Positive of  EST (y1)
+
+```{r}
+
+```
+
+*Sensitivity: 0.7967, Specificity: 0.7398, Predictive Positive Value: 0.8763*
+
+e)	Sensitivity, Specificity, and Predictive Value Positive of  History of Chest Pain (y2)
+
+```{r}
+
+table(est1$d, est1$y2)
+xtabs(~est1$d + est1$y2)
+
+```
+*Sensitivity: 0.9472, Specificity: 0.4457, Predictive Positive Value: 0.7982*
+
+
+If you were choosing one of the two as a screening marker, and the most important thing was not to miss cases, which might you prefer? 
+*Based on the results for the 2 questions above I would prefer to use the test looking at a history of chest pain*
+
+If you were a patient with a positive on one of the two markers, which would give you a better shot of not having disease? 
+*The one which would give me a better chance at not having the disease would be the positive on the stress test.*
+
+```{r}
+### *Below here is R code that might be helpful:* 
+#cass <- read.csv("Users/MCCStudent/Desktop/cass.txt")	#Change the above ^^^ to match your path
+
+#head(cass)
+#summary(cass)
+
+#What proportion have disease; SINCE d coded 0/1!!!
+#mean(cass$d)		
+
+#What proportion have disease AND y1=1
+#mean(cass$d & cass$y1)		
+
+#What proportion have y1=1 AMONG those with disease
+#mean(cass$y1[cass$d==1]) or mean(subset(cass,d==1)$y1)
+
+# xtabs(~d+y1,data=cass)
+# xtabs(~d+y2,data=cass)
+```
+ 
+##  Other homework: Chapter 6, #8 and #10 from Principles of Biostatistics: 
+
+8. For Mexican American infants born in Arizona in 1986 and 1987, the probability that a child’s gestational age is less than 37 weeks is 0.142 and the probability that his or her birth weight is less than 2500 grams is 0.051. Furthermore, the probability that the two events occur simultaneously is 0.031
+
+a)	Let A be the event that an infant’s gestational age is less than 37 weeks, and B be the event that his or her birth weight is less than 2500 grams. Construct a Venn diagram to illustrate the relationship between A and B (this can be sketched by hand, or use shapes in Word; doesn't have to be done on R, though it should be roughly to scale)
+
+b)	Are A and B independent? 
+
+c)	For a randomly selected Mexican American newborn, what is the probability that A or B or both occur?
+
+d)	What is the probability that event A occurs if event B occurs?  
+
+
+
+
+
+10. The probabilities associated with the expected principal source of payment for hospital discharges in the United States in 1990 are listed below:
+
+Principal Source of Payment	| Probability
+----- | -------
+Private Insurance	| 0.387
+Medicare	| 0.345
+Medicaid	| 0.116
+Other Government Program	| 0.033
+Self-payment	| 0.058
+Other/No charge	| 0.028
+Not stated	| 0.033
+----- | -------
+Total	| 1.00
+
+a)	What is the probability that the principal source of payment for a given hospital discharge is the patient’s private insurance?
+
+b)	What is the probability that the principal source of payment is a government program (including Medicare, Medicaid, and Other)?
+
+c)	Given that the primary source of payment is a government program, what is the probability that it is Medicare? 
