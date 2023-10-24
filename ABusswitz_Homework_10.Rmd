@@ -1,0 +1,124 @@
+---
+title: "Homework 10"
+output: word_document
+---
+## Homework 10
+
+12.	In a study of intra-observer variability in the assessment of cervical smears, 3325 slides were screened for the presence or absence of abnormal squamous cells. Each slide was screened by a particular observer and then re screened six months later by the same observer. The results of this study are shown below:
+
+First Screening	| 2nd: present	| 2nd: absent	| Total
+----------|---------|---------|--------
+Present |	1763 |	489 |	2252
+Absent |	403 |	670 |	1073
+----------|---------|---------|--------
+Total	 | 2166 |	1159 |	3325
+
+a.	Do these data support the null hypothesis that here is no association between time of screening and diagnosis?
+*This does seem to support the null hypothesis, if it wasn't detected in the first screening, in 6 months it most likely would show similar results.*
+
+The data could also be displayed in the following manner:
+
+Abnormal cells |	1st screen |	2nd screen |	Total
+----------|---------|---------|--------
+            Present	 | 2252	 | 2166 |	4418
+              Absent |	1073 |	1159 |	2232
+----------|---------|---------|--------
+                Total |	3325 |	3325 |	6650
+
+b.	Is there anything wrong with this presentation? How would you analyze these data?
+*I don't see anything wrong, I would use the fisher test to analyze the data.*
+
+15. In an effort to evaluate the health effects of air pollutants containing sulfur, individuals living near a pulp mill in Finland were questioned about various symptoms following a strong emissions released in September 1987.  The same subjects were questioned again 4 months later, during a low-exposure period. A summary of the responses related to the occurrence of headaches is presented below. 
+
+
+Low Exposure| High Exposure Yes| High Exposure No |	Total
+----------|---------|---------|--------
+Yes	| 2	| 2	| 4
+No	| 8	| 33	| 41
+Total	| 10	| 35	| 45
+
+
+a.  Test the null hypothesis that there is no association between exposure to air pollutants containing sulfur and the occurrence of headaches.
+*Used Fisher's Exact Test*
+
+b. What do you conclude? 
+*The p-value for this is 0.2093, so we can accept the null hypothesis and say there is no correlation between headaches and exposure.*
+
+c.  If you found a significant association, what limitations of this study would affect your ability to conclude that pollution caused headaches? 
+*A limitation would be the small sample size, there isn't enough unbiased opinion in a smaller population.*
+
+17. In France, a study was conducted to investigate potential risk factors for ectopic pregnancy. Of the 279 women who had experienced ectopic pregnancy, 28 had suffered from pelvic inflammatory disease.  Of the 279 women who had not, 6 had suffered from pelvic inflammatory disease. 
+
+a. Construct a 2x2 contingency table
+```{r}
+Pregnancy <- matrix(c(28, 251, 6, 273), nrow = 2, ncol = 2, byrow = T)
+rownames(Pregnancy) <- c("Yes Ectopic Pregnancy", "No Ectopic Pregnancy")
+colnames(Pregnancy) <- c("PID Yes", "PID No")
+Pregnancy <- as.table(Pregnancy)
+Pregnancy
+
+```
+
+b. Estimate the odds ratio of suffering ectopic pregnancy for women who had pelvic inflammatory disease vs women who have not. 
+*The Odds Ratio is 5.062144*
+
+c. Find a 99% confidence interval for the population odds ratio. 
+*The 99% Confidence Interval is between -275.2628  554.2628*
+
+d. Assuming the women were chosen to have equal numbers who had and had not experienced an ectopic pregnancy, what kind of study is this?  Is the relative risk that you can calculate from this table meaningful? 
+*This is considered binary data. The relative risk is not meaningful because there is no control group to compare to.*
+
+20. A study was conducted to determine whether geographic variations in the use of medical and surgical services could be explained in part by differences in the appropriateness with which physicians use these services. One concern might be that a high rate of inappropriate use of a service is associated with high overall use within a particular region. For the procedure coronary angiography, three geographic areas were studied: a high-use site (site 1),  a low use urban site (site 2), and a low use rural site (site 3).  Within each geographical region, each use of this procedure was classified as appropriate, equivocal, or inappropriate by a panel of expert physicians. These data are saved in the data set *angio*. Site number is saved under the variable name *site*, and level of appropriateness under *appropro*. 
+
+A.	At the 0.05 level of significance, test the null hypothesis that there is no association between geographic region and the appropriateness of use of coronary angiography.
+
+B.	What do you conclude?
+*I can conclude from confidence interval and the p-value that we can accept the null hypothesis that there is no association between geographical region and the appropriateness of the use of coronary angiography.*
+
+16.7.  
+In a study investigating various risk factors for heart disease, the relationship between hypertension and coronary artery disease (CAD) was examined for individuals in two different age groups. (see tables below)
+```{r}
+Young <- matrix(c(552,212,941,495), nrow = 2, ncol = 2, byrow = T)
+colnames(Young) <- c("CAD Yes", "CAD No")
+rownames(Young) <- c("Hypertension Yes", "Hypertension No")
+Young <- as.table(Young)
+Young
+```
+```{r}
+Old <- matrix(c(1102, 87, 1018, 106), nrow = 2, ncol = 2, byrow = T)
+colnames(Old) <- c("CAD Yes", "CAD No")
+rownames(Old) <- c("Yes", "No")
+Old <- as.table(Old)
+Old
+```
+
+A.  Within each category of age, are the odds of suffering from coronary artery disease greater or smaller for individuals with hypertension?
+*The odds of suffering from CAD is higher in those suffering from hypertension in the younger age group. However, it is not the same for the older group as that saw higher numbers of CAD in people who did not have hypertension, but only slightly higher than those with hypertension.*
+
+B. Do you feel that it is appropriate to combine the information in these two tables to make a single unifying statement about the relationship between hypertension and coronary artery disease? Why or why not?
+*Looking at the Odds Ratio between the two tables, they are very similar and I would feel comfortable using the mantel haenszel test two combine the data sets.*
+
+C.  Compute a Mantel -Haenszel estimate of the summary odds ratio.
+*Common Odds Ratio is 1.354611, which is close to the individual Odds ratio's for the 2 tables.*
+
+D. Construct a 95% confidence interval for the summary odds ratio.
+*The 95% confidence interval is between 1.152997 1.591479.*
+
+E. At the alpha= .05 level of significance, Test the null hypothesis that there is no association between hypertension and coronary artery disease. What do you conclude? 
+*Testing the null hypothesis, the p-value is quite small so there is a relationship between CAD and hypertension.*
+
+### 35-49 Years of Age
+|CAD	Yes	| CAD No	|Total
+---|------|------|------
+Hypertension Yes	| 552	| 212	| 764
+Hypertension No	| 941	| 495	| 1436
+Total	| 1493	| 707	| 2200
+
+### Over 65 Years of Age
+|CAD	Yes	| CAD No	|Total
+---|------|------|------
+Yes	| 1102	| 87	| 1189
+No	| 1018	| 106	| 1124
+Total	| 2120	| 193	| 2313
+
+
