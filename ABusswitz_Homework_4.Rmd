@@ -1,0 +1,153 @@
+---
+title: "Homework 4"
+output: word_document
+---
+
+# Biostatistics Homework 4
+
+
+8.2  Why is it important that a sample drawn from a population be random ?
+*Random sampling, or probability sampling, is a sampling method that allows for the randomization of sample selection*
+
+8.4 What is the standard error of a sample mean? How does the standard error compare to the standard deviation of the population?
+*The standard deviation measures the amount of variability, from the individual data values to the mean, while the standard error of the mean measures how far the sample mean of the data is likely to be from the true population mean.*
+
+8.11 In Norway, the distribution of birth weights for infants whose gestational age is 40 weeks is approximately normal with mean $\mu=3500$ grams and standard deviation $\sigma=430$ grams. 
+	
+a. Given a newborn whose gestational age is 40 weeks, what is the probability that his or her birth weight is less than 2500 g? 
+
+b. What value cuts off the lower 5% of the distribution of birth weights?
+
+c.	Describe the distribution of means of samples of size 5 drawn from this distribution. What would be the mean of the means? What would be the standard deviation of the means? 
+
+d.	What value cuts off the lower 5% of the distribution of means-from-samples-of-size-5 of birth weights?
+
+e.	If you take a sample of 5 newborns, all with gestational age 40 weeks, what is the probability that their mean birthweight is less than 2500 grams?
+
+f.	What is the probability that exactly one of the newborns in your sample of 5 has a birthweight less than 2500g?
+
+9.3 What are the factors that affect the length of a confidence interval for $\mu$?
+
+9.12 Serum zinc levels for 462 males between the ages of 15 and 17 are saved under the variable name zinc in the dataset serzinc. The units of measurement for serum zinc measurement are micrograms per deciliter. 
+```{r}
+#Read in your data here
+ library(readr)
+serzinc <- read_csv("~/Papers/Biostatistics JHU 2021/serzinc.TXT")
+
+
+```
+
+a. Find a two-sided 95% confidence interval for $\mu$, the true mean serum zinc level for this population of males. 
+
+```{r}
+Xbar <- with(serzinc, mean(zinc))
+s <- with(serzinc, sd(zinc))
+
+Xbar - qt(.975, 461)*s/sqrt(462)
+Xbar + qt(.975, 461)*s/sqrt(462)
+
+```
+
+b. Interpret the confidence interval
+*The confidence interval can be interpreted as having a large sample number and a better normal approximation.*
+
+
+c. Calculate a 90% confidence interval.  How does  the 90% confidence interval compare to the 95% confidence interval? Why? 
+
+```{r}
+Xbar - 1.645*s/sqrt(462)
+Xbar + 1.465*s/sqrt(462)
+
+```
+
+*There isn't a big difference between the two intervals, probably because the sample size is large and there is little room for different approximations of intervals.*
+
+9.13 The dataset lowbwt contains information recorded for a sample of 100 low birth weight infants born in two teaching hospitals in Boston. Measurements of systolic blood pressure are saved under the variable named sbp, while indicators of gender-- 1 indicating a male and 0 indicating a female-- are saved under the variable name sex. 
+
+```{r}
+#Read in your data
+library(readr)
+lowbwt <- read_csv("C:/Users/amand/Downloads/lowbwt.csv")
+
+
+```
+
+a. Compute a 95% confidence interval for the true mean systolic blood pressure of male low birth weight infants.
+
+```{r}
+Xbar <- with(lowbwt, mean(sbp[sex==1]))
+s <- with(lowbwt, sd(sbp[sex==1]))
+
+Xbar - qt(.975, 43)*s/sqrt(44)
+
+Xbar + qt(.975, 43)*s/sqrt(44)
+```
+
+b. Compute a 95% confidence interval for the true mean systolic blood pressure of female low birth weight infants.
+
+```{r}
+Xbar <- with(lowbwt, mean(sbp[sex==0]))
+s <- with(lowbwt, sd(sbp[sex==0]))
+
+Xbar - qt(.975,55)*s/sqrt(56)
+Xbar + qt(.975,55)*s/sqrt(56)
+
+```
+
+c. Do you think it's possible that males and females have the same mean systolic blood pressure? Explain briefly.
+*I think they could have the same mean because they have closely related confidence intervals.*
+
+
+d. Calculate 90% confidence intervals for both male and female low birth weight infants (two separate intervals).
+
+```{r}
+Xbar <- with(lowbwt, mean(sbp[sex==1]))
+s <- with(lowbwt, sd(sbp[sex==1]))
+
+Xbar - 1.645*s/sqrt(44)
+Xbar + 1.645*s/sqrt(44)
+
+
+xbar <- with(lowbwt, mean(sbp[sex==0]))
+s <- with(lowbwt, sd(sbp[sex==0]))
+
+xbar - 1.645*s/sqrt(56)
+xbar + 1.645*s/sqrt(56)
+
+
+```
+
+e. Calculate a 99% confidence interval for both male and female low birth weight infants (two separate intervals).
+
+```{r}
+Xbar - 2.576*s/sqrt(44)
+Xbar + 2.576*s/sqrt(44)
+
+xbar - 2.576*s/sqrt(56)
+xbar + 2.576*s/sqrt(56)
+
+
+```
+
+f. Suppose the standard deviation (σ) of the larger population of low birth weight infants is known to be 11 mm. Construct 95% confidence intervals for males and females using this. 
+
+```{r}
+
+Xbar <- with(lowbwt, mean(sbp[sex==1]))
+
+Xbar - qt(.975, 43)*11/sqrt(44)
+Xbar + qt(.975, 43)*11/sqrt(44)
+
+
+Xbar <- with(lowbwt, mean(sbp[sex==0]))
+
+Xbar - qt(.975,55)*11/sqrt(56)
+Xbar + qt(.975,55)*11/sqrt(56)
+
+
+
+```
+
+g. How does the interval calculated based on σ differ from the 95% interval based on s?
+*They actually don't differ that much. 44.27435 and  51.45292 for males and 43.47956 and 49.44901 for females when given the 95%. Then when given sigma it was 44.51933 and 51.20794 for males and 43.51847 and 49.4101 for females.* 
+
