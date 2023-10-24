@@ -1,0 +1,143 @@
+---
+title: "Homework 12: Multiple Regression"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Biostat Assignment: Multiple Regression
+
+
+### Chapter 19, Problem 7
+
+
+Variable	| Coefficient	 | Standard Error
+---------|------------|-----------
+Diet Group |	-11.25 |	4.33
+Baseline Cholesterol	| 0.85	| 0.07
+Body Mass Index	| 0.23	| 0.65
+Gender	| -3.02	 | 4.42
+---------|------------|-----------
+
+a. Conduct tests of the null hypothesis that each of the four coefficients in the regression equation is equal to 0. At the 0.05 level of significance, which of the explanatory variables have an effect on serum cholesterol level eight weeks after the start of the study?
+```{r}
+ library(readxl)
+Ch_19_Prob_7 <- read_excel("~/Papers/Biostatistics JHU 2021/Ch.19 Prob. 7.xlsx")
+
+summary(lm(formula = Ch_19_Prob_7$Coefficient ~ Ch_19_Prob_7$Variable))
+
+```
+*The regression is not equal to 0, seems like diet group has the greatest effect on serum cholesterol level.*
+b. If an individual's body mass index were to increase by 1 kg/m2, while the values of all other explanatory variables remained constant, what would happen to his/her serum cholesterol level?
+*If the body mass of a person were to increase their serum levels would stay the same if everything else also stayed the same.*
+
+c. If an individual's body mass index were to increase by 10 kg/m2, while the values of all other explanatory variables remained constant, what would happen to his/her serum cholesterol level?
+*If their body mass rose by that much you would see an increase in the serum cholesterol level even if the rest stayed the same.*
+
+d. The indicator variable gender is coded so that 1 represents a male and 0 a female. Who is more likely to have a higher serum cholesterol level, a man or a woman? By how much, on average?
+*From the stats it seems like a man will have a higher serum level.*
+
+### Chapter 19, Problem 8
+For the population of low birth weight infants, a significant linear relationship was found to exist between systolic blood pressure and gestational age (data set lowbwt).
+```{r}
+ library(readr)
+lowbwt <- read_csv("~/Papers/Biostatistics JHU 2021/lowbwt.csv")
+
+```
+a. Construct a two-way scatter plot of systolic blood pressure versus five-minute Apgar score. What kind of linear relationship (if any) appears to exist?
+```{r}
+plot(lowbwt$gestage ~ lowbwt$apgar5)
+
+```
+
+b. using systolic blood pressure as the response and gestational age and apgar score as the explanatory variables, fit the least-squares model
+y-hat = alpha + beta-1-hat * x1 + beta-2-hat * x2
+```{r}
+summary(lm(sbp~gestage + apgar5, data = lowbwt))
+
+fit1 <- lm(sbp~gestage + apgar5, data = lowbwt)
+summary(fit1)
+```
+
+Interpret beta-1-hat, the estimated coefficient of gestational age. What does it mean in words? Do the same for beta-2-hat, the estimated coefficient of Apgar score..
+*This is the expected difference who differ by 1 at the expected vairable 1 week diff. in gestage. 1.18 is the difference of gestage score.*
+
+c. What is the estimated mean systolic blood pressure for the population of low birth weight infants whose gestational age is 31 weeks and whose five-minute Apgar score is 7?
+```{r}
+predict.lm(fit1, newdata = data.frame(gestage=31, apgar5=7))
+
+9.8034+1.848*31+0.4875*7
+```
+
+d. Construct a 95% confidence interval for the true mean value of systolic blood pressure when x1 = 31 weeks and x2 = 7.
+```{r}
+predict.lm(fit1, newdata = data.frame(gestage=31, apgar5=7), interval = "confidence")
+
+```
+e. Test the null hypothesis H0: beta-2 = 0, at the 0.05 significance level. What do you conclude?
+*We can conclude that we can reject the null hypothesis. Because the p-value is less than .05.*
+
+f. Comment on the magnitude of R2? Does the inclusion of five-minute Apgar score in the model already containing gestational age improve your ability to predict systolic blood pressure?
+*The R2 value is .08 which isn't very high and indicates it does not improve the ability to predict the sbp.*
+g. Construct a plot of the residuals versus the fitted values of systolic blood pressure. What does this plot tell you about the fit of the model to observed data?
+```{r}
+plot(fit1$residuals ~ fit1$fitted.values)
+abline(h=0)
+
+scatter.smooth(x=fit1$residuals, y=fit1$fitted.values, main="fitted.values ~ residuals")
+
+```
+*From the graph the fit looks like the observed data.*
+###Chapter 19, Problem 9
+
+The dataset lowbwt also contains sex, to indicate gender.
+
+a. Add the indicator sex (1 for male, 0 for female) to the model that contains gestational age. Given two infants with the same gestational ages, one male and the other female, which would tend to have the higher systolic blood pressure? By how much, on average? 
+```{r}
+summary(lm(sbp~gestage + sex, data = lowbwt))
+fit2 <- summary(lm(sbp~gestage + sex, data = lowbwt))
+
+```
+
+
+b. Construct a two-way scatter plot of systolic blood pressure versus gestational age. On the graph, draw the two separate least-squares regression lines corresponding to males and females. Is the gender difference at each value of gestational age significantly different from 0?
+```{r}
+fit <- lm(lowbwt$sbp ~ lowbwt$gestage)
+fit
+attributes(fit)
+plot(fit$residuals ~ fit$fitted.values)
+abline(fit)
+
+```
+
+c. Add to the model a third explanatory variable that is the interaction between gestational age and sex. Does gestational age have a different effect on systolic blood pressure depending on the sex of the infant?
+```{r}
+scatter.smooth(x=lowbwt$sbp, y=lowbwt$gestage, main="Sbp~Gestage")
+```
+
+d. Would you choose to include sex and the gestational age-sex interaction term simultaneously? Why or why not?
+*I would choose to imclude both because it is an extra variable that tells more information about the sbp and can help in diagnostics.*
+
+### Chapter 19, Problem 10
+The Bayley Scales of Infant Development yield scores on two indices--the Psychomotor Development Index (PDI) and the Mental Development Index (MDI)--which can be use to assess a child's level of functioning in each of these areas at approximately one year of age. Among normal healthy infants, both indices have a mean value of 100. As part of a study assessing the development and neurological status of children who have undergone reparative heart surgery during the first three months of life, the Bayley Scales were administered to a sample of one-year-old infants with congenital heart disease. The children had been randomized to one of two different treatment groups, known as "circulatory arrest" and "low-flow bypass." The groups differed in the specific way in which the reparative surgery was performed. Unlike circulatory arrest, low-flow bypass maintains continuous circulation through the brain; although it is felt to be preferable by some physicians, it also has its own risk of brain injury. The data contained in the data set heart. PDI scores are saved under the variable name pdi while MDI scores are saved under mdi and indicators of treatment group under treatment. For this variable, 0 represents circulatory arrest and 1 is for low-flow bypass.
+
+a. In Chapter 11, the two-sample t-test was used to compare mean PDI and MDI scores for infants assigned to the two treatment groups. These analyses could also be performed with linear regression. Fit two linear regression models, one with PDI score as the response and the other with MDI score as the response. Write the equations.
+```{r}
+ library(readr)
+heart <- read_csv("~/Papers/Biostatistics JHU 2021/heart.csv")
+
+summary(lm(mdi ~ trtment + pdi, data = heart))
+
+```
+b. Who is more likely to have a higher PDI score (which treatment group). How much higher, on average?
+*Treatment group 1*
+
+c. Who is more likely to have a higher MDI score (which treatment group). How much higher, on average?
+*Treatment group 0*
+
+d. Which score (if either) is different between groups at a statistically significant level?
+*The mdi score is different*
+
+
