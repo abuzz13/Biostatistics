@@ -1,0 +1,110 @@
+---
+title: "Homework 13"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Unit 13 Assignment
+
+###Chapter 20, Problem 7
+Use the now-familiar lowbwt data set.
+
+a. Using germinal matrix hemorrhage as the response, fit a logistic model where x1 is five minute Apgar score. Write the equation and interpret β1, the estimated coefficient of Apgar score.
+```{r}
+library(readr)
+lowbwt <- read_csv("~/Papers/Biostatistics JHU 2021/lowbwt.csv")
+
+fit1 <- glm(grmhem ~ apgar5, data = lowbwt, family = binomial)
+fit1
+exp(-0.2496)
+```
+b. If a particular child has a five-minute Apgar score of 3, what is the predicted probability that this child will experience a brain hemorrhage? What is the probability if the child's score is 7?
+```{r}
+logodds <- -.3037 - .2496*3
+odds <- exp(logodds)
+p <- odds / (1+odds)
+p
+```
+
+c. At the 0.05 level of significance, test the null hypothesis that the population parameter β1 is equal to 0. What do you conclude?
+*reject the null hypothesis because it is not 0.*
+
+d. Now fit the regression model where x2 represents toxemia status. Interpret β2, the estimated coefficient of toxemia.
+```{r}
+fit2 <- glm(grmhem ~ tox, data = lowbwt, family = binomial)
+fit2
+```
+
+e. For a child whose mother was diagnosed with toxemia during pregnancy, what is the predicted probability of experiencing a germinal matrix hemorrhage? What is the probability for a child who was not diagnosed with toxemia?
+```{r}
+logodds <-  -1.535 - 1.460
+odds <- exp(logodds)
+p2 <- odds / (1+odds)
+p2
+logodds <-  -1.535 - 1.460
+odds <- exp(logodds)
+p3 <- odds / (1-odds)
+p3
+```
+f. What are the estimated odds of suffering a germinal matrix hemorrhage for children whose mothers were diagnosed with toxemia relative to children whose mothers are not.
+```{r}
+logodds <-  -1.535 - 1.460
+odds <- exp(logodds)
+p4 <- odds / (1+odds)
+p4
+```
+
+g. Construct 95% confidence interval for the population odds ratio. Does this interval contain the value 1? What does this tell you?
+```{r}
+t.test(lowbwt)
+```
+*The CI is between 12.34144 15.33189 and does not include 1, so this tells me there is not a significant difference between children with mothers who suffer from toxemia and those whose mothers do not.*
+
+###Chapter 21, Problem 7
+In the table below you will find survival times in months since diagnosis for 10 AIDS patients suffering from concomitant esophageal candidiasis, an infection due to Candida yeast, and cytomegalovirus, a herpes infection that can cause serious illness. Censored observations are denoted by a plus sign. 
+
+Patient Number |	Survival (months)
+-----------|-----------
+1	| 0.5+
+2	| 1
+3	| 1
+4	| 1
+5	| 2
+6	| 5+
+7	| 8+
+8	| 9
+9	| 10+
+10	| 12+
+
+a. How many deaths were observed in this sample of patients?
+*There were 4 deaths in this sample set.*
+
+b. Estimate the survival function S(t). 
+*10/11, 7/10, 6/9, 5/8, 4/7, 3/6, 2/5, 1/4*
+
+c. What is S(1), the estimated probability of survival at one month? What is the estimated probability at 5 months? At 6 months?
+*S(1)=0.7, S(5)=.625, S(6)=.625*
+
+d. Construct a survival curve.
+
+###Chapter 21, Problem 9
+In a study of bladder cancer, tumors were removed from the bladders of 86 patients. Subsequently, the individuals were assigned to be treated with either a placebo or the drug thiopeta. Time to recurrence of tumor in months is saved under the variable name time in the data set *bladder*. Treatment status is saved under the name group; the 1 value represents placebo. Indicators of censoring status; where 0 indicates a tumor did not occur and the observation was censored, is saved under the name censor.
+
+a. Use a Kaplan-Meier curve to estimate the survival function in each treatment group, and plot.
+```{r}
+library(readr)
+bladder <- read_table2("~/Papers/Biostatistics JHU 2021/bladder.txt")
+t.test(bladder$time, var.equal = TRUE)
+Surv(time=bladder$time, event=bladder$censor)
+```
+
+b. Does it appear that the individuals in one group have a longer time to first recurrence than in the other group?
+*It does appear that one group, thiopta, has the longer interval of recurrence of tumors.* 
+
+c. Test the null hypothesis that the distributions of recurrence times are identical. What do you conclude?
+*The null hypothesis can be rejected as the p-value is close to 0.*
+
+
