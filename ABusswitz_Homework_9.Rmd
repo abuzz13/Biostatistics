@@ -1,0 +1,168 @@
+---
+title: "Homework Unit 9"
+output: word_document
+---
+
+#Assignment for Biostatistics Week 9:
+
+Download and open the “Stenosis” data from the class webpage.  Assume this is a random sample from some population. Answer the following questions referring to this dataset.
+```{r}
+library(readr)
+stenosis <- read_csv("~/Papers/Biostatistics JHU 2021/stenosis.txt")
+
+```
+In class:
+
+1.	What proportion of this sample has aortic Stenosis (disease)? Give a 95% CI for the proportion of the population that this sample came from that have aortic stenosis.
+
+```{r}
+ mean(stenosis$disease)
+
+p.hat <- mean(stenosis$disease)
+p.hat - 1.96*(sqrt(p.hat * (1-p.hat)) / sqrt(length(stenosis$disease)))
+p.hat + 1.96*(sqrt(p.hat * (1-p.hat)) / sqrt(length(stenosis$disease)))
+
+binom.test(105, 215)
+```
+
+2.	Test the null hypothesis that 40% of this population has aortic stenosis. Write a one-sentence conclusion.
+
+```{r}
+
+binom.test(105,215, p=.4)
+
+```
+
+*We will reject the null hypothesis at 40%.*
+
+3.	Make a 2x2 table showing the association between gender and aortic stenosis.  
+
+```{r}
+
+xtabs(~stenosis$disease + stenosis$`sex: male`)
+
+my.table <- table(stenosis$disease, stenosis$`sex: male`)
+
+```
+
+a.	Conduct a Fisher’s Exact Test on the 2x2 table to test the null hypothesis that there is no association between gender and aortic stenosis against the alternative hypothesis that there is an association. Write one (full) sentence giving your conclusions.  
+
+```{r}
+  
+fisher.test(my.table)
+
+```
+*P-value is much less than .05 so we are able to reject the notion of them being independent and say there is some association between stenosis and biological sex.*
+
+b.	Conduct a Chi-square test on the same table. Do you get the same results as the fisher exact test? Any guess why or why not?
+
+```{r}
+
+chisq.test(my.table)
+
+
+```
+*Both of these methods give a small enough value to reject the null hypothesis and the probability of not having the disease is not the same between male and female.*
+
+
+4.   Pretend the people with aortic stenosis are a random sample of all people with this disease. Test the hypothesis that among the people with aortic stenosis, the proportion of women is 0.5. Give the estimated proportion and a 95% CI along with the test. 
+
+```{r}
+  
+binom.test(62,105, p=.5)
+
+
+```
+
+```
+Sample Code: 
+stenosis <- read.csv("stenosis.txt")
+table(stenosis$disease)
+binom.test(table(stenosis$disease))
+binom.test(table(stenosis$disease),p=.4)
+table(stenosis$disease,stenosis$sex..male)
+fisher.test(table(stenosis$disease,stenosis$sex..male))
+chisq.test(table(stenosis$disease,stenosis$sex..male))
+```
+
+7. In a study of maternal smoking and congenital malformations, consider children born with an oral cleft.  In a random sample of 27 such infants, 15 have mothers who smoked during pregnancy. 
+
+a. What is the point estimate for p? Construct a 95% confidence interval for the population proportion.
+ *A point estimate for p=15/27=0.56*
+
+95% confidence interval is:
+
+p +/- Z*v(p*(1-p)/n)
+
+0.56 + 1.96*sqrt(0.56*(1-0.56)/27)
+0.56 - 1.96*sqrt(0.56*(1-0.56)/27)
+
+(0.3727618, 0.7472382)
+
+b.	You would like to know whether the proportion of mothers who smoked during pregnancy for children with an oral cleft is identical to the proportion of mothers who smoked for children with other types of malformations, which is 32.8%. What is the null hypothesis of the appropriate test?
+*The null hypothesis is that the the proportions of malformations, whether it is a cleft pallet or something else, is the same for mothers who smoked during pregnancy.*
+
+c.	What is the alternative hypothesis?
+*The alternative hypothesis is there is a difference in what type of malformations occur do to smoking during pragnancy.*
+
+d.	Conduct the test at the .01 level of significance
+Ho:p=0.328
+
+Ha:p not equal to 0.328
+
+The test statistic is
+
+Z=(phat-p)/v(p*(1-p)/n)
+
+(0.56-0.328)/sqrt(0.328*(1-0.328)/27)
+
+2.567724
+
+The p-value=2*P(Z>2.57)=0.0102
+
+e.	What do you conclude?
+*Since p-value is larger than 0.005, we do not reject HO.*
+
+12. Suppose you are interested in investigating the factors that affect the prevalence of tuberculosis among intravenous drug users. In a group of 97 individuals who admit to sharing needles, 24.7% had a positive tuberculin skin test result; among 161 drug users who deny sharing needles, 17.4% had a positive test result. 
+```{r}
+TB <- matrix(c(24, 73, 28, 133), ncol = 2, byrow = TRUE)
+colnames(TB) <- c("TB test+", "TB test-")
+rownames(TB) <- c( "Sharing Needles", "Not Sharing")
+TB <- as.table(TB)
+TB
+summary(TB)
+
+```
+a. Assuming that the population proportions of positive skin test results are in fact equal, estimate the common value p.
+
+(97*.247) + (161*.174)/(97+161) = 0.2014457
+*The estimated common p-value is 20.14%*
+
+b. Test this null hypothesis that the proportions of intravenous drug users who have a positive tuberculin skin test result are identical for those who share needles and those who do not.
+
+z=.247-.174/sqrt.2014*.7986(1/97+1/161) = 1.416
+
+c.	What do you conclude?
+*I can conclude there is significant evidence that the null hypothesis, the proportions are identical.*
+
+d.	Construct a 95% confidence interval for the true difference in proportions
+(.247-.174) +/- (1.96) (sqrt(.247*.753/97) + (.147*.826/161)) = -0.0309 - 0.1769
+ *95% CI is between -0.0309 - 0.1769.*
+
+```
+Note/tip:  Please try to do this "by hand"-- ie using the computer as a calculator but not just asking it to do the calculations for you. Something along these lines (but make sure you understand where this comes from and don’t just cutnpaste!): 
+
+E <- c(70*33/440 , 70*110/440, 70*297/440, 
+	211*33/440 , ...  <<etc... finish this>>
+
+
+O <- c(6,22,42,  <<etc... finish this>>
+ 
+stat <- sum( (( O-E )^2)/   <<etc... finish this>>
+ 
+pval <- 1-pchisq(stat, df=1)
+pval
+```
+
+
+
